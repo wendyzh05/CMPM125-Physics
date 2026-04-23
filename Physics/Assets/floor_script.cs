@@ -1,52 +1,50 @@
 using UnityEngine;
 
-public class PlayerSpawner : MonoBehaviour
+public class floor_script : MonoBehaviour
 {
-    [Tooltip("Tag used to find the player GameObject.")]
     [SerializeField] private string playerTag = "Player";
-
-    [Tooltip("PlayerPrefs key prefix used by the checkpoints.")]
     [SerializeField] private string prefsKeyPrefix = "LastCheckpoint";
-
-    [Tooltip("Where the player should spawn if no checkpoint is active.")]
     [SerializeField] private Transform initialSpawnPoint;
 
-    private void Start()
+    private void OnCollisionEnter(Collision collision)
     {
-        GameObject player = null;
-
-        if (!string.IsNullOrEmpty(playerTag))
-            player = GameObject.FindWithTag(playerTag);
-
-        if (player == null)
-            player = GameObject.Find("Player");
-
-        if (player == null)
-        {
-            Debug.LogWarning("PlayerSpawner: No player found with tag '" + playerTag + "' or name 'Player'.");
+        if (!collision.gameObject.CompareTag(playerTag))
             return;
-        }
 
-        Vector3 spawnPos;
+        RespawnPlayer(collision.gameObject);
+    }
 
-        // If there is a saved checkpoint, use it
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.CompareTag(playerTag))
+            return;
+
+        RespawnPlayer(other.gameObject);
+    }
+
+    private void RespawnPlayer(GameObject player)
+    {
+        Vector3 respawnPos;
+
+        // Use checkpoint if one exists
         if (PlayerPrefs.HasKey($"{prefsKeyPrefix}_X"))
         {
             Vector3 savedPos = check_script.GetSavedCheckpointPosition(prefsKeyPrefix);
-            spawnPos = GetSafeSpawnPosition(player, savedPos);
+            respawnPos = GetSafeSpawnPosition(player, savedPos);
         }
-        // Otherwise use the initial spawn point
+        // Otherwise use initial spawn point
         else if (initialSpawnPoint != null)
         {
-            spawnPos = initialSpawnPoint.position;
+            respawnPos = initialSpawnPoint.position;
         }
         else
         {
-            Debug.LogWarning("PlayerSpawner: No saved checkpoint and no initial spawn point assigned.");
+            Debug.LogWarning("floor_script: No saved checkpoint and no initial spawn point assigned.");
             return;
         }
 
-        MovePlayerToPosition(player, spawnPos);
+        MovePlayerToPosition(player, respawnPos);
+        Debug.Log("Player respawned at: " + respawnPos);
     }
 
     private Vector3 GetSafeSpawnPosition(GameObject player, Vector3 savedPos)

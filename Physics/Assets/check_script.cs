@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(Collider))]
+
 public class check_script : MonoBehaviour
 {
     [Header("Activation")]
@@ -20,6 +21,10 @@ public class check_script : MonoBehaviour
 
     private void Awake()
     {
+        PlayerPrefs.DeleteKey($"{prefsKeyPrefix}_X");
+        PlayerPrefs.DeleteKey($"{prefsKeyPrefix}_Y");
+        PlayerPrefs.DeleteKey($"{prefsKeyPrefix}_Z");
+        PlayerPrefs.DeleteKey($"{prefsKeyPrefix}_Name");
         // Ensure the collider is a trigger so OnTriggerEnter is called
         var col = GetComponent<Collider>();
         col.isTrigger = true;
