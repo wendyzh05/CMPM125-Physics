@@ -13,6 +13,12 @@ public class PlayerSpawner : MonoBehaviour
 
     private void Start()
     {
+        RespawnPlayer();
+    }
+
+    // 🔥 This is the method your spikes will call
+    public void RespawnPlayer()
+    {
         GameObject player = null;
 
         if (!string.IsNullOrEmpty(playerTag))
@@ -29,13 +35,13 @@ public class PlayerSpawner : MonoBehaviour
 
         Vector3 spawnPos;
 
-        // If there is a saved checkpoint, use it
+        // Use saved checkpoint if it exists
         if (PlayerPrefs.HasKey($"{prefsKeyPrefix}_X"))
         {
             Vector3 savedPos = check_script.GetSavedCheckpointPosition(prefsKeyPrefix);
             spawnPos = GetSafeSpawnPosition(player, savedPos);
         }
-        // Otherwise use the initial spawn point
+        // Otherwise use initial spawn
         else if (initialSpawnPoint != null)
         {
             spawnPos = initialSpawnPoint.position;
