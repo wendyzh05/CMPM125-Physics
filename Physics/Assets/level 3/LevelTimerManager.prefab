@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a89900599a09e58468960ee97ad527f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LevelTimer
-  timeLimit: 60
+  timeLimit: 90
   timerText: {fileID: 0}
